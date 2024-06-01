@@ -1,15 +1,17 @@
 package fer.iot.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.cloud.Timestamp;
-import com.google.type.DateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class FirebaseLastSense {
 
-    private static final String ENTITY_NAME = "last-data";
+    @JsonDeserialize(using = TimestampDeserializer.class)
     private Timestamp timestamp;
     private Double value;
 

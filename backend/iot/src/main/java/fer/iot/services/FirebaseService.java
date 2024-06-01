@@ -67,4 +67,12 @@ public class FirebaseService {
         Entity retrieved = d2.get(taskKey);
         return new FirebaseLastSense(retrieved.getTimestamp("timestamp"), retrieved.getDouble("value"));
     }
+
+    public FirebaseGranicneVrijednosti getLimit(Sensor sensor) {
+        String kind = "limit";
+        String name = sensor.label;
+        Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity retrieved = d2.get(taskKey);
+        return new FirebaseGranicneVrijednosti(retrieved.getDouble("value"));
+    }
 }
