@@ -59,4 +59,12 @@ public class FirebaseService {
                 .build();
         d2.put(sense);
     }
+
+    public FirebaseLastSense getSense(Sensor sensor) {
+        String kind = "sense";
+        String name = sensor.label;
+        Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity retrieved = d2.get(taskKey);
+        return new FirebaseLastSense(retrieved.getTimestamp("timestamp"), retrieved.getDouble("value"));
+    }
 }
