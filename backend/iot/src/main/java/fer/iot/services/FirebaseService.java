@@ -11,6 +11,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import fer.iot.data.FirebaseGranicneVrijednosti;
 import fer.iot.data.FirebaseLastSense;
 import fer.iot.data.Sensor;
+import fer.iot.data.Error;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,5 +75,67 @@ public class FirebaseService {
         Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
         Entity retrieved = d2.get(taskKey);
         return new FirebaseGranicneVrijednosti(retrieved.getDouble("value"));
+    }
+
+    public void processSense(Sensor sensor, FirebaseLastSense sense){
+        //provjeri jeli unutar granica ako nije onda dodaj u bazu kao error
+        if(sensor == Sensor.TEMPERATURE || sensor == Sensor.HUMIDITY){
+            checkLimit(sensor, sense);
+        }
+        //spremi mjerenje
+        saveLastSense(sensor, sense);
+
+    }
+
+    private void checkLimit(Sensor sensor, FirebaseLastSense sense) {
+        Double limit = getLimit(sensor).getValue();
+        if(sense.getValue() > limit){
+            putError(sensor, sense);
+        } else{
+            deleteError(sensor);
+        }
+    }
+
+    private void deleteError(Sensor sensor) {
+        String kind = "error";
+        String name = sensor.label;
+        Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        d2.delete(taskKey);
+    }
+
+    public Error getError(Sensor sensor) {
+        String kind = "error";
+        String name = sensor.label;
+        Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity retrieved = d2.get(taskKey);
+        if(retrieved == null) return null;
+        return new Error(retrieved.getTimestamp("timestamp"),
+                retrieved.getDouble("value"),
+                retrieved.getTimestamp("errorStartedTimestamp")
+                );
+    }
+
+
+    private void putError(Sensor sensor, FirebaseLastSense sense) {
+        //ako error vec postoji, prekopiraj timestamp, ako ne stvori novi
+        Error error =getError(sensor);
+        String kind = "error";
+        String name = sensor.label;
+        Key senseKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity data;
+        if(error == null){
+            data = Entity.newBuilder(senseKey)
+                    .set("timestamp", sense.getTimestamp())
+                    .set("value", sense.getValue())
+                    .set("errorStartedTimestamp", sense.getTimestamp())
+                    .build();
+        } else {
+            data = Entity.newBuilder(senseKey)
+                    .set("timestamp", sense.getTimestamp())
+                    .set("value", sense.getValue())
+                    .set("errorStartedTimestamp", error.getErrorStartedTimestamp())
+                    .build();
+        }
+        d2.put(data);
     }
 }
