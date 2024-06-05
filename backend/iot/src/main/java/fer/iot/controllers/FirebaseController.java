@@ -1,5 +1,6 @@
 package fer.iot.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fer.iot.data.Error;
 import fer.iot.data.FirebaseGranicneVrijednosti;
 import fer.iot.data.FirebaseLastSense;
@@ -7,7 +8,9 @@ import fer.iot.data.Sensor;
 import fer.iot.dto.ErrorDTO;
 import fer.iot.dto.LimitDTO;
 import fer.iot.dto.SenseDTO;
+import fer.iot.mqtt.MqttPublisherService;
 import fer.iot.services.FirebaseService;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/iot")
 public class FirebaseController {
+
+    @Autowired
+    MqttPublisherService mqttPublisherService;
 
     @Autowired
     FirebaseService firebaseService;
@@ -84,6 +90,19 @@ public class FirebaseController {
         if (e == null) {
             return new ResponseEntity<>(null, HttpStatus.OK);
         } else return new ResponseEntity<>(ErrorDTO.toDto(Sensor.HUMIDITY, e), HttpStatus.OK);
+    }
+
+    @GetMapping("/actuate")
+    public ResponseEntity<String> actuate(){
+        try {
+            mqttPublisherService.publishMessage();
+            return new ResponseEntity<>("Actuated.", HttpStatus.OK);
+        } catch (MqttException e) {
+            return new ResponseEntity<>("Mqtt exception.", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("JSON processing exception.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
 
