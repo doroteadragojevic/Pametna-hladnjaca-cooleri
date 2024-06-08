@@ -15,13 +15,13 @@ class Header {
 @AllArgsConstructor
 @NoArgsConstructor
 class Body {
-    private Grupa16 Grupa16;
+    private Grupa16DHT11 Grupa16DHT11;
 }
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class Grupa16 {
+class Grupa16DHT11 {
     private String actuate = "actuate";
 }
 

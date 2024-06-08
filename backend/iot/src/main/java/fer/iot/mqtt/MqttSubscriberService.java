@@ -1,5 +1,9 @@
 package fer.iot.mqtt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.Timestamp;
 import fer.iot.data.FirebaseLastSense;
 import fer.iot.data.Sensor;
 import fer.iot.services.FirebaseService;
@@ -22,9 +26,9 @@ public class MqttSubscriberService {
     private FirebaseService firebaseService;
 
     //TODO
-    private static final String TEMPERATURE = "/grupa16/device1/temperature";
-    private static final String HUMIDITY = "/grupa16/device1/humidity";
-    private static final String MOVEMENT = "/grupa16/device1/motion";
+    private static final String TEMPERATURE = "intstv_cooleri/output/temperature";
+    private static final String HUMIDITY = "intstv_cooleri/output/humidity";
+    private static final String MOVEMENT = "intstv_cooleri/output/motion";
 
     @PostConstruct
     public void subscribeToTopic() throws MqttException {
@@ -32,39 +36,42 @@ public class MqttSubscriberService {
             throw new IllegalStateException("MQTT client is not connected");
         }
 
-        mqttClient.subscribe(TEMPERATURE, new IMqttMessageListener() {
+        IMqttMessageListener listener = new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 String payload = new String(message.getPayload());
                 System.out.println("Message received on topic " + topic + ": " + payload);
-                // Obradite dolaznu poruku ovdje
-                //TODO
-                FirebaseLastSense data;
-                firebaseService.processSense(Sensor.TEMPERATURE, data);
+                FirebaseLastSense data = null;
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode rootNode = objectMapper.readTree(payload);
+                    JsonNode contentNodes = rootNode.path("contentNodes");
+                    if (contentNodes.isArray()) {
+                        for (JsonNode node : contentNodes) {
+                            double value = node.path("value").asInt();
+                            System.out.println("Value: " + value);
+                            data = new FirebaseLastSense(Timestamp.now(), value);
+                        }
+                    }
+                } catch (JsonProcessingException e) {
+                    //e.printStackTrace();
+                };
+
+                firebaseService.processSense(Sensor.valueOf(extractLastValue(topic)), data);
             }
-        });
-        mqttClient.subscribe(HUMIDITY, new IMqttMessageListener() {
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String payload = new String(message.getPayload());
-                System.out.println("Message received on topic " + topic + ": " + payload);
-                // Obradite dolaznu poruku ovdje
-                //TODO
-                FirebaseLastSense data;
-                firebaseService.processSense(Sensor.HUMIDITY, data);
-            }
-        });
-        mqttClient.subscribe(MOVEMENT, new IMqttMessageListener() {
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String payload = new String(message.getPayload());
-                System.out.println("Message received on topic " + topic + ": " + payload);
-                // Obradite dolaznu poruku ovdje
-                //TODO
-                FirebaseLastSense data;
-                firebaseService.processSense(Sensor.MOVEMENT, data);
-            }
-        });
+        };
+
+        mqttClient.subscribe(TEMPERATURE, listener);
+        mqttClient.subscribe(HUMIDITY, listener);
+        mqttClient.subscribe(MOVEMENT, listener);
+    }
+
+    private static String extractLastValue(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        String[] parts = input.split("/");
+        return parts[parts.length - 1];
     }
 }
 
