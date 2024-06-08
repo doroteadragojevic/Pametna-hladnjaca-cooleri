@@ -1,4 +1,3 @@
-// components/TemperatureChart.js
 import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 import "chartjs-adapter-date-fns";
@@ -7,6 +6,8 @@ const TemperatureChart = ({ temperatureData }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
+    if (!chartRef.current) return;
+
     const ctx = chartRef.current.getContext("2d");
     const chart = new Chart(ctx, {
       type: "line",

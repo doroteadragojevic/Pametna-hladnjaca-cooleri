@@ -1,4 +1,3 @@
-// src/mockData/index.js
 export const mockTemperatureData = [
   {
     timestamp: new Date(
@@ -86,3 +85,9 @@ export const mockActivityLog = [
     message: "Detektiran pokret na ulazu u hladnjaču.",
   },
 ];
+
+export const mockNotifications = {
+  temperature: { value: 23.0, status: "correct range", action: null },
+  moisture: { value: 54.7, status: "correct range", action: null },
+  movement: null, // initialize as null, only show when detected
+};
