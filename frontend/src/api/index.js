@@ -17,27 +17,39 @@ export const getMovement = async () => {
   return response.data;
 };
 
-export const getError = async () => {
-  const response = await axios.get(`${BASE_URL}/error/temp`);
+export const getError = async (sensor) => {
+  const response = await axios.get(`${BASE_URL}/error/${sensor}`);
   return response.data;
+};
+
+export const getTemperatureThreshold = async () => {
+  const response = await axios.get(`${BASE_URL}/gv/temp`);
+  return {
+    min: response.data.min,
+    max: response.data.max,
+  };
+};
+
+export const getMoistureThreshold = async () => {
+  const response = await axios.get(`${BASE_URL}/gv/humidity`);
+  return {
+    min: response.data.min,
+    max: response.data.max,
+  };
 };
 
 export const setMinTemperature = async (value) => {
-  const response = await axios.post(`${BASE_URL}/gv/temp`, { value });
-  return response.data;
+  await axios.post(`${BASE_URL}/gv/temp`, { min: value });
 };
 
 export const setMaxTemperature = async (value) => {
-  const response = await axios.post(`${BASE_URL}/gv/temp`, { value });
-  return response.data;
+  await axios.post(`${BASE_URL}/gv/temp`, { max: value });
 };
 
 export const setMinMoisture = async (value) => {
-  const response = await axios.post(`${BASE_URL}/gv/humidity`, { value });
-  return response.data;
+  await axios.post(`${BASE_URL}/gv/humidity`, { min: value });
 };
 
 export const setMaxMoisture = async (value) => {
-  const response = await axios.post(`${BASE_URL}/gv/humidity`, { value });
-  return response.data;
+  await axios.post(`${BASE_URL}/gv/humidity`, { max: value });
 };

@@ -9,8 +9,8 @@ function App() {
     <Router>
       <GlobalStyle />
       <Navigation>
-        <NavLink href="/">Dashboard</NavLink>
-        <NavLink href="/activity-log">Activity Log</NavLink>
+        <NavLink to="/">Dashboard</NavLink>
+        <NavLink to="/activity-log">Activity Log</NavLink>
       </Navigation>
       <Container>
         <Routes>

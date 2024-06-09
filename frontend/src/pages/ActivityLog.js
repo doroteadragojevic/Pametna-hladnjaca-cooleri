@@ -1,25 +1,37 @@
-import React from "react";
-import {
-  ActivityLogContainer,
-  SectionTitle,
-  LogList,
-  LogItem,
-} from "../styles";
-import { mockActivityLog } from "../mockData";
+import React, { useState, useEffect } from "react";
+import { getMovement } from "../api";
 
-const ActivityLog = () => {
+function ActivityLog() {
+  const [movementData, setMovementData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getMovement();
+        setMovementData(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching movement data:", error);
+        setMovementData([]);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
-    <ActivityLogContainer>
-      <SectionTitle>Activity Log</SectionTitle>
-      <LogList>
-        {mockActivityLog.map((log, index) => (
-          <LogItem key={index}>
-            {`${new Date(log.timestamp).toLocaleString()}: ${log.message}`}
-          </LogItem>
-        ))}
-      </LogList>
-    </ActivityLogContainer>
+    <div>
+      <h1>Activity Log</h1>
+      {Array.isArray(movementData) && movementData.length > 0 ? (
+        movementData.map((data, index) => (
+          <div key={index}>
+            <p>Movement: {data.movement}</p>
+            <p>Time: {data.time}</p>
+          </div>
+        ))
+      ) : (
+        <p>No movement data available</p>
+      )}
+    </div>
   );
-};
+}
 
 export default ActivityLog;
