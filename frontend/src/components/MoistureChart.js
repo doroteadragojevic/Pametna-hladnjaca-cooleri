@@ -1,48 +1,30 @@
-import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
-import "chartjs-adapter-date-fns";
+import React from "react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+Chart.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const MoistureChart = ({ moistureData }) => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    if (!chartRef.current) return;
-
-    const ctx = chartRef.current.getContext("2d");
-    const chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: moistureData.map((data) => new Date(data.timestamp)),
-        datasets: [
-          {
-            label: "Moisture",
-            data: moistureData.map((data) => data.value),
-            borderColor: "rgba(153, 102, 255, 1)",
-            backgroundColor: "rgba(153, 102, 255, 0.2)",
-          },
-        ],
+  const chartData = {
+    labels: moistureData.map((entry) =>
+      new Date(entry.timestamp).toLocaleString()
+    ),
+    datasets: [
+      {
+        label: "Moisture",
+        data: moistureData.map((entry) => entry.value),
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
       },
-      options: {
-        scales: {
-          x: {
-            type: "time",
-            time: {
-              unit: "minute",
-            },
-          },
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
+    ],
+  };
 
-    return () => {
-      chart.destroy();
-    };
-  }, [moistureData]);
-
-  return <canvas ref={chartRef}></canvas>;
+  return <Line data={chartData} />;
 };
 
 export default MoistureChart;

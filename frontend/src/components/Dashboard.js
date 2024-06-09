@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import TemperatureChart from "../components/TemperatureChart";
 import MoistureChart from "../components/MoistureChart";
-import {
-  mockTemperatureData,
-  mockMoistureData,
-  mockNotifications,
-} from "../mockData";
+import { AppContext } from "../context/AppContext";
 import {
   Container,
   Title,
@@ -18,15 +14,8 @@ import {
 import Settings from "../components/Settings";
 
 const Dashboard = () => {
-  const [temperatureData, setTemperatureData] = useState([]);
-  const [moistureData, setMoistureData] = useState([]);
-  const [notifications, setNotifications] = useState({});
-
-  useEffect(() => {
-    setTemperatureData(mockTemperatureData);
-    setMoistureData(mockMoistureData);
-    setNotifications(mockNotifications);
-  }, []);
+  const { temperatureData, moistureData, movementData, notifications } =
+    useContext(AppContext);
 
   const renderNotification = (type, value, status, action) => {
     let color = "green";
@@ -81,6 +70,19 @@ const Dashboard = () => {
         <Section>
           <SectionTitle>Settings</SectionTitle>
           <Settings />
+        </Section>
+        <Section>
+          <SectionTitle>Activity Log</SectionTitle>
+          {movementData.length > 0 ? (
+            movementData.map((data, index) => (
+              <div key={index}>
+                <p>Movement: {data.value}</p>
+                <p>Time: {new Date(data.timestamp).toLocaleString()}</p>
+              </div>
+            ))
+          ) : (
+            <p>No movement data available</p>
+          )}
         </Section>
       </DashboardContainer>
     </Container>
