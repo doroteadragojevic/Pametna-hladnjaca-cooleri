@@ -1,4 +1,6 @@
+// src/components/Settings.js
 import React, { useState, useEffect, useContext } from "react";
+import { AppContext } from "../context/AppContext";
 import {
   setMinTemperature,
   setMaxTemperature,
@@ -7,14 +9,15 @@ import {
   getTemperatureThreshold,
   getMoistureThreshold,
 } from "../api";
-import { AppContext } from "../context/AppContext";
+import { Divider } from "../styles";
 
-const Settings = () => {
+function Settings() {
+  const { fetchTemperatureData, fetchMoistureData } = useContext(AppContext);
+
   const [minTemp, setMinTemp] = useState(0);
   const [maxTemp, setMaxTemp] = useState(100);
   const [minMoisture, setMinMoistureValue] = useState(0);
   const [maxMoisture, setMaxMoistureValue] = useState(100);
-  const { fetchTemperatureData, fetchMoistureData } = useContext(AppContext);
 
   useEffect(() => {
     async function fetchThresholds() {
@@ -62,40 +65,113 @@ const Settings = () => {
 
   return (
     <div>
-      <div>
+      <div style={{ marginBottom: "20px" }}>
         <h3>Temperature Thresholds</h3>
-        <label>
-          Min Temperature:
-          <input type="number" value={minTemp} onChange={handleMinTempChange} />
-        </label>
-        <label>
-          Max Temperature:
-          <input type="number" value={maxTemp} onChange={handleMaxTempChange} />
-        </label>
-        <button onClick={handleSaveTemperature}>Save Temperature</button>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Min Temperature:
+            <input
+              type="number"
+              value={minTemp}
+              onChange={handleMinTempChange}
+              style={{
+                display: "block",
+                margin: "5px 0",
+                padding: "5px",
+                width: "100%",
+                maxWidth: "300px",
+              }}
+            />
+          </label>
+        </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Max Temperature:
+            <input
+              type="number"
+              value={maxTemp}
+              onChange={handleMaxTempChange}
+              style={{
+                display: "block",
+                margin: "5px 0",
+                padding: "5px",
+                width: "100%",
+                maxWidth: "300px",
+              }}
+            />
+          </label>
+        </div>
+        <button
+          onClick={handleSaveTemperature}
+          style={{
+            display: "block",
+            padding: "10px 20px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            margin: "10px 0",
+          }}
+        >
+          Save Temperature
+        </button>
       </div>
-      <div>
+      <Divider style={{ margin: "20px 0" }} />
+      <div style={{ marginBottom: "20px" }}>
         <h3>Moisture Thresholds</h3>
-        <label>
-          Min Moisture:
-          <input
-            type="number"
-            value={minMoisture}
-            onChange={handleMinMoistureChange}
-          />
-        </label>
-        <label>
-          Max Moisture:
-          <input
-            type="number"
-            value={maxMoisture}
-            onChange={handleMaxMoistureChange}
-          />
-        </label>
-        <button onClick={handleSaveMoisture}>Save Moisture</button>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Min Moisture:
+            <input
+              type="number"
+              value={minMoisture}
+              onChange={handleMinMoistureChange}
+              style={{
+                display: "block",
+                margin: "5px 0",
+                padding: "5px",
+                width: "100%",
+                maxWidth: "300px",
+              }}
+            />
+          </label>
+        </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Max Moisture:
+            <input
+              type="number"
+              value={maxMoisture}
+              onChange={handleMaxMoistureChange}
+              style={{
+                display: "block",
+                margin: "5px 0",
+                padding: "5px",
+                width: "100%",
+                maxWidth: "300px",
+              }}
+            />
+          </label>
+        </div>
+        <button
+          onClick={handleSaveMoisture}
+          style={{
+            display: "block",
+            padding: "10px 20px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            margin: "10px 0",
+          }}
+        >
+          Save Moisture
+        </button>
       </div>
     </div>
   );
-};
+}
 
 export default Settings;

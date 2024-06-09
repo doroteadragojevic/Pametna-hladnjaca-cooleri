@@ -14,14 +14,23 @@ const AppProvider = ({ children }) => {
   const [moistureData, setMoistureData] = useState([]);
   const [movementData, setMovementData] = useState([]);
   const [notifications, setNotifications] = useState({});
+  const [activityLog, setActivityLog] = useState([]);
+
+  const addLogEntry = (message) => {
+    setActivityLog((prevLog) => [
+      ...prevLog,
+      { timestamp: new Date().getTime(), message },
+    ]);
+  };
 
   const fetchTemperatureData = useCallback(async () => {
     try {
       const data = await getTemperature();
       setTemperatureData((prevData) => [
-        ...prevData,
+        ...prevData.slice(-9),
         { timestamp: data.timestamp.seconds * 1000, value: data.value },
       ]);
+      addLogEntry(`Received temperature information: ${data.value}°C.`);
     } catch (error) {
       console.error("Error fetching temperature data:", error);
     }
@@ -31,9 +40,10 @@ const AppProvider = ({ children }) => {
     try {
       const data = await getMoisture();
       setMoistureData((prevData) => [
-        ...prevData,
+        ...prevData.slice(-9),
         { timestamp: data.timestamp.seconds * 1000, value: data.value },
       ]);
+      addLogEntry(`Received moisture information: ${data.value}%.`);
     } catch (error) {
       console.error("Error fetching moisture data:", error);
     }
@@ -43,9 +53,10 @@ const AppProvider = ({ children }) => {
     try {
       const data = await getMovement();
       setMovementData((prevData) => [
-        ...prevData,
-        { timestamp: data.timestamp.seconds * 1000, value: data.value },
+        ...prevData.slice(-9),
+        { timestamp: Date.now(), value: data.value },
       ]);
+      addLogEntry(data.value ? "Movement detected." : "Movement not detected.");
     } catch (error) {
       console.error("Error fetching movement data:", error);
     }
@@ -58,8 +69,8 @@ const AppProvider = ({ children }) => {
       const currentTemp = tempData.value;
       const tempStatus =
         currentTemp < tempThreshold.min || currentTemp > tempThreshold.max
-          ? "out of range"
-          : "correct range";
+          ? "is outside of the correct range"
+          : "is inside the correct range";
 
       const moistureThreshold = await getMoistureThreshold();
       const moistureData = await getMoisture();
@@ -67,37 +78,42 @@ const AppProvider = ({ children }) => {
       const moistureStatus =
         currentMoisture < moistureThreshold.min ||
         currentMoisture > moistureThreshold.max
-          ? "out of range"
-          : "correct range";
+          ? "is outside of the correct range"
+          : "is inside the correct range";
+
+      const movementData = await getMovement();
+      const movementStatus = movementData.value
+        ? "recognized - light currently turned on."
+        : "not recognized - light currently turned off.";
 
       setNotifications({
         temperature: { value: currentTemp, status: tempStatus },
         moisture: { value: currentMoisture, status: moistureStatus },
-        movement: { status: "N/A", action: "No action required" }, // Placeholder for movement
+        movement: { status: movementStatus },
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   }, []);
 
-  const fetchAllData = useCallback(() => {
-    fetchTemperatureData();
-    fetchMoistureData();
-    fetchMovementData();
-    fetchNotifications();
+  useEffect(() => {
+    const temperatureInterval = setInterval(fetchTemperatureData, 10000);
+    const moistureInterval = setInterval(fetchMoistureData, 10000);
+    const movementInterval = setInterval(fetchMovementData, 10000);
+    const notificationsInterval = setInterval(fetchNotifications, 10000);
+
+    return () => {
+      clearInterval(temperatureInterval);
+      clearInterval(moistureInterval);
+      clearInterval(movementInterval);
+      clearInterval(notificationsInterval);
+    };
   }, [
     fetchTemperatureData,
     fetchMoistureData,
     fetchMovementData,
     fetchNotifications,
   ]);
-
-  useEffect(() => {
-    fetchAllData();
-    const interval = setInterval(fetchAllData, 10000);
-
-    return () => clearInterval(interval);
-  }, [fetchAllData]);
 
   return (
     <AppContext.Provider
@@ -106,9 +122,7 @@ const AppProvider = ({ children }) => {
         moistureData,
         movementData,
         notifications,
-        fetchTemperatureData,
-        fetchMoistureData,
-        fetchMovementData,
+        activityLog,
       }}
     >
       {children}

@@ -4,29 +4,34 @@ import MoistureChart from "../components/MoistureChart";
 import { AppContext } from "../context/AppContext";
 import {
   Container,
-  Title,
   DashboardContainer,
   Section,
   SectionTitle,
   NotificationContainer,
   NotificationItem,
+  Divider,
 } from "../styles";
 import Settings from "../components/Settings";
 
 const Dashboard = () => {
-  const { temperatureData, moistureData, movementData, notifications } =
+  const { temperatureData, moistureData, notifications, activityLog } =
     useContext(AppContext);
 
   const renderNotification = (type, value, status, action) => {
-    let color = "green";
-    if (status !== "correct range") {
-      color = "red";
+    let color;
+    if (type === "movement") {
+      color =
+        status === "not recognized - light currently turned off."
+          ? "grey"
+          : "green";
+    } else {
+      color = status === "is inside the correct range" ? "green" : "red";
     }
 
     return (
       <NotificationItem key={type} color={color}>
         {`${type.charAt(0).toUpperCase() + type.slice(1)} ${status}`}
-        {value !== null ? `: ${value}` : ""}
+        {value !== null ? ` (${value}).` : ""}
         {action ? ` - ${action}` : ""}
       </NotificationItem>
     );
@@ -34,22 +39,22 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <Title>Pametna Hladnjača - Dashboard</Title>
       <DashboardContainer>
         <Section>
           <SectionTitle>Notifications</SectionTitle>
+          <Divider />
           <NotificationContainer>
             {notifications.temperature &&
               renderNotification(
                 "temperature",
-                notifications.temperature.value,
+                notifications.temperature.value + "°C",
                 notifications.temperature.status,
                 notifications.temperature.action
               )}
             {notifications.moisture &&
               renderNotification(
                 "moisture",
-                notifications.moisture.value,
+                notifications.moisture.value + "%",
                 notifications.moisture.status,
                 notifications.moisture.action
               )}
@@ -64,25 +69,31 @@ const Dashboard = () => {
         </Section>
         <Section>
           <SectionTitle>Graphs</SectionTitle>
+          <Divider />
           <TemperatureChart temperatureData={temperatureData} />
+          <Divider />
           <MoistureChart moistureData={moistureData} />
         </Section>
         <Section>
           <SectionTitle>Settings</SectionTitle>
+          <Divider />
           <Settings />
         </Section>
         <Section>
           <SectionTitle>Activity Log</SectionTitle>
-          {movementData.length > 0 ? (
-            movementData.map((data, index) => (
-              <div key={index}>
-                <p>Movement: {data.value}</p>
-                <p>Time: {new Date(data.timestamp).toLocaleString()}</p>
-              </div>
-            ))
-          ) : (
-            <p>No movement data available</p>
-          )}
+          <Divider />
+          <div style={{ maxHeight: "200px", overflowY: "scroll" }}>
+            {activityLog
+              .sort((a, b) => b.timestamp - a.timestamp)
+              .map((entry, index) => (
+                <div key={index}>
+                  <p>
+                    {new Date(entry.timestamp).toLocaleString()} -{" "}
+                    {entry.message}
+                  </p>
+                </div>
+              ))}
+          </div>
         </Section>
       </DashboardContainer>
     </Container>

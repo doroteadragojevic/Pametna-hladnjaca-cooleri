@@ -61,10 +61,12 @@ export const NotificationItem = styled.div`
 
 export const Navigation = styled.nav`
   display: flex;
-  justify-content: flex-start;
-  background-color: #007bff;
-  padding: 10px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  align-items: center;
+  background-color: #282c34;
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0px 4px 2px -2px gray;
 `;
 
 export const NavLink = styled(Link)`

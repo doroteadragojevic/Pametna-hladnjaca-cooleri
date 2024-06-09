@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/iot";
+const BASE_URL = "http://localhost:8080/iot"; // Provjerite ispravnost URL-a
 
 export const getTemperature = async () => {
   const response = await axios.get(`${BASE_URL}/ls/temp`);
@@ -14,11 +14,6 @@ export const getMoisture = async () => {
 
 export const getMovement = async () => {
   const response = await axios.get(`${BASE_URL}/ls/motion`);
-  return response.data;
-};
-
-export const getError = async (sensor) => {
-  const response = await axios.get(`${BASE_URL}/error/${sensor}`);
   return response.data;
 };
 

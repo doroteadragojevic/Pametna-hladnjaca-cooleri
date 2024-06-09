@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppProvider from "./context/AppContext";
-import { GlobalStyle, Navigation, NavLink, Container } from "./styles";
+import { GlobalStyle, Navigation, Container } from "./styles";
 
 function App() {
   return (
@@ -10,7 +10,9 @@ function App() {
       <Router>
         <GlobalStyle />
         <Navigation>
-          <NavLink href="/">Dashboard</NavLink>
+          <h1 style={{ color: "white", margin: 0, paddingLeft: 5 }}>
+            Pametna Hladnjača - Dashboard
+          </h1>
         </Navigation>
         <Container>
           <Routes>
