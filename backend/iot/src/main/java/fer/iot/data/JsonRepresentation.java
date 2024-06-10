@@ -1,6 +1,8 @@
 package fer.iot.data;
 
 import java.util.List;
+import java.util.ListIterator;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JsonRepresentation {
 
-    private Source source;
-    private List<ContentNode> contentNodes;
+    private Source source = new Source();
+    private List<ContentNode> contentNodes = List.of(new ContentNode());
 
     @Data
     @NoArgsConstructor

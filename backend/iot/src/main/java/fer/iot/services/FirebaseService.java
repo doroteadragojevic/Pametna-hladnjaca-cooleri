@@ -109,9 +109,10 @@ public class FirebaseService {
 
     }
 
-    private void checkLimit(Sensor sensor, FirebaseLastSense sense) throws MqttException, JsonProcessingException {
-        Double limit = getLimitMax(sensor).getValue();
-        if(sense.getValue() > limit){
+    private void  checkLimit(Sensor sensor, FirebaseLastSense sense) throws MqttException, JsonProcessingException {
+        Double limitMax = getLimitMax(sensor).getValue();
+        Double limitMin = getLimitMin(sensor).getValue();
+        if(sense.getValue() > limitMax || sense.getValue() < limitMin){
             putError(sensor, sense);
             mqttPublisherService.publishMessage();
         } else{

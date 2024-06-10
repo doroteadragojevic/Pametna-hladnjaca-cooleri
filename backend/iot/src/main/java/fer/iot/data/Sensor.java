@@ -1,9 +1,9 @@
 package fer.iot.data;
 
 public enum Sensor {
-    TEMPERATURE("temperature"),
+    TEMPERATURE("temperatura"),
     HUMIDITY("humidity"),
-    MOVEMENT("motion");
+    MOVEMENT("motions");
 
     public final String label;
 
@@ -13,11 +13,11 @@ public enum Sensor {
 
     public static Sensor get(String s) {
         switch (s){
-            case "temperature":
+            case "temperatura":
                 return TEMPERATURE;
             case "humidity":
                 return HUMIDITY;
-            case "motion":
+            case "motions":
                 return MOVEMENT;
             default:
                 throw new IllegalArgumentException("Wrong name.");

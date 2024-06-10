@@ -26,9 +26,9 @@ public class MqttSubscriberService {
     private FirebaseService firebaseService;
 
     //TODO
-    private static final String TEMPERATURE = "intstv_cooleri/output/temperature";
+    private static final String TEMPERATURE = "intstv_cooleri/output/temperatura";
     private static final String HUMIDITY = "intstv_cooleri/output/humidity";
-    private static final String MOVEMENT = "intstv_cooleri/output/motion";
+    private static final String MOVEMENT = "intstv_cooleri/output/motions";
 
     @PostConstruct
     public void subscribeToTopic() throws MqttException {
@@ -63,7 +63,7 @@ public class MqttSubscriberService {
 
         mqttClient.subscribe(TEMPERATURE, listener);
         mqttClient.subscribe(HUMIDITY, listener);
-        mqttClient.subscribe(MOVEMENT, listener);
+        //mqttClient.subscribe(MOVEMENT, listener);
     }
 
     private static String extractLastValue(String input) {
