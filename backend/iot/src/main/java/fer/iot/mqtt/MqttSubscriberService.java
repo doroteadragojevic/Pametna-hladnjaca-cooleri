@@ -48,7 +48,7 @@ public class MqttSubscriberService {
                     JsonNode contentNodes = rootNode.path("contentNodes");
                     if (contentNodes.isArray()) {
                         for (JsonNode node : contentNodes) {
-                            double value = node.path("value").asInt();
+                            double value = node.path("value").asDouble();
                             System.out.println("Value: " + value);
                             data = new FirebaseLastSense(Timestamp.now(), value);
                         }
@@ -57,7 +57,7 @@ public class MqttSubscriberService {
                     //e.printStackTrace();
                 };
 
-                firebaseService.processSense(Sensor.valueOf(extractLastValue(topic)), data);
+                firebaseService.processSense(Sensor.get(extractLastValue(topic)), data);
             }
         };
 

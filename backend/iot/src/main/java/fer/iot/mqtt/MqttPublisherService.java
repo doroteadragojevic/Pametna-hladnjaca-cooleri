@@ -2,7 +2,7 @@ package fer.iot.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fer.iot.data.ActuationMessage;
+import fer.iot.data.JsonRepresentation;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MqttPublisherService {
 
-    private static final String ACTUATE = "intstv_cooleri/input/actuate";
+    private static final String ACTUATE = "intstv_cooleri/output/led";
 
     @Autowired
     private IMqttClient mqttClient;
@@ -24,7 +24,7 @@ public class MqttPublisherService {
         }
 
 
-        ActuationMessage payload = new ActuationMessage(System.currentTimeMillis());
+        JsonRepresentation payload = new JsonRepresentation();
         String jsonPayload = objectMapper.writeValueAsString(payload);
         MqttMessage message = new MqttMessage(jsonPayload.getBytes());
         message.setQos(2); // Kvaliteta usluge (0, 1, ili 2)

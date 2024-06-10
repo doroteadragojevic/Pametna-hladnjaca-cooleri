@@ -46,6 +46,11 @@ public class FirebaseController {
         firebaseService.saveLastSense(Sensor.TEMPERATURE, data);
     }
 
+    @PostMapping("/ls/motion")
+    public void postMotion(@RequestBody FirebaseLastSense data) {
+        firebaseService.saveLastSense(Sensor.MOVEMENT, data);
+    }
+
     @PostMapping("/ls/humidity")
     public void postHumidityTEST(@RequestBody FirebaseLastSense data) {
         firebaseService.saveLastSense(Sensor.HUMIDITY, data);

@@ -1,5 +1,6 @@
 package fer.iot.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
@@ -12,7 +13,9 @@ import fer.iot.data.FirebaseGranicneVrijednosti;
 import fer.iot.data.FirebaseLastSense;
 import fer.iot.data.Sensor;
 import fer.iot.data.Error;
+import fer.iot.mqtt.MqttPublisherService;
 import jakarta.annotation.PostConstruct;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,9 @@ public class FirebaseService {
 
     @Autowired
     FirebaseApp firebaseApp;
+
+    @Autowired
+    MqttPublisherService mqttPublisherService;
 
     FileInputStream serviceAccount =
             new FileInputStream("src/main/resources/google-service.json");
@@ -77,7 +83,7 @@ public class FirebaseService {
         return new FirebaseGranicneVrijednosti(retrieved.getDouble("value"));
     }
 
-    public void processSense(Sensor sensor, FirebaseLastSense sense){
+    public void processSense(Sensor sensor, FirebaseLastSense sense) throws MqttException, JsonProcessingException {
         //provjeri jeli unutar granica ako nije onda dodaj u bazu kao error
         if(sensor == Sensor.TEMPERATURE || sensor == Sensor.HUMIDITY){
             checkLimit(sensor, sense);
@@ -87,10 +93,11 @@ public class FirebaseService {
 
     }
 
-    private void checkLimit(Sensor sensor, FirebaseLastSense sense) {
+    private void checkLimit(Sensor sensor, FirebaseLastSense sense) throws MqttException, JsonProcessingException {
         Double limit = getLimit(sensor).getValue();
         if(sense.getValue() > limit){
             putError(sensor, sense);
+            mqttPublisherService.publishMessage();
         } else{
             deleteError(sensor);
         }
