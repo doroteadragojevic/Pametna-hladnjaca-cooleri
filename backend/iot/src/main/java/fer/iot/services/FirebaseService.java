@@ -48,9 +48,17 @@ public class FirebaseService {
 
     }
 
-    public void saveLimit(Sensor sensor, FirebaseGranicneVrijednosti data) {
+    public void saveLimitMax(Sensor sensor, FirebaseGranicneVrijednosti data) {
         String kind = "limit";
-        String name = sensor.label;
+        String name = sensor.label + " max";
+        Key limitKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity limit = Entity.newBuilder(limitKey).set("value", data.getValue()).build();
+        d2.put(limit);
+    }
+
+    public void saveLimitMin(Sensor sensor, FirebaseGranicneVrijednosti data) {
+        String kind = "limit";
+        String name = sensor.label + " min";
         Key limitKey = d2.newKeyFactory().setKind(kind).newKey(name);
         Entity limit = Entity.newBuilder(limitKey).set("value", data.getValue()).build();
         d2.put(limit);
@@ -75,9 +83,17 @@ public class FirebaseService {
         return new FirebaseLastSense(retrieved.getTimestamp("timestamp"), retrieved.getDouble("value"));
     }
 
-    public FirebaseGranicneVrijednosti getLimit(Sensor sensor) {
+    public FirebaseGranicneVrijednosti getLimitMax(Sensor sensor) {
         String kind = "limit";
-        String name = sensor.label;
+        String name = sensor.label + " max";
+        Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
+        Entity retrieved = d2.get(taskKey);
+        return new FirebaseGranicneVrijednosti(retrieved.getDouble("value"));
+    }
+
+    public FirebaseGranicneVrijednosti getLimitMin(Sensor sensor) {
+        String kind = "limit";
+        String name = sensor.label + " min";
         Key taskKey = d2.newKeyFactory().setKind(kind).newKey(name);
         Entity retrieved = d2.get(taskKey);
         return new FirebaseGranicneVrijednosti(retrieved.getDouble("value"));
@@ -94,7 +110,7 @@ public class FirebaseService {
     }
 
     private void checkLimit(Sensor sensor, FirebaseLastSense sense) throws MqttException, JsonProcessingException {
-        Double limit = getLimit(sensor).getValue();
+        Double limit = getLimitMax(sensor).getValue();
         if(sense.getValue() > limit){
             putError(sensor, sense);
             mqttPublisherService.publishMessage();

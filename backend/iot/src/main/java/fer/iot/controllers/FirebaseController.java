@@ -31,14 +31,24 @@ public class FirebaseController {
         this.firebaseService = firebaseService;
     }
 
-    @PostMapping("/gv/temp")
-    public void postTemperature(@RequestBody FirebaseGranicneVrijednosti data) {
-        firebaseService.saveLimit(Sensor.TEMPERATURE, data);
+    @PostMapping("/gv/temp/max")
+    public void postTemperatureMax(@RequestBody FirebaseGranicneVrijednosti data) {
+        firebaseService.saveLimitMax(Sensor.TEMPERATURE, data);
     }
 
-    @PostMapping("/gv/humidity")
-    public void postHumidity(@RequestBody FirebaseGranicneVrijednosti data) {
-        firebaseService.saveLimit(Sensor.HUMIDITY, data);
+    @PostMapping("/gv/humidity/max")
+    public void postHumidityMax(@RequestBody FirebaseGranicneVrijednosti data) {
+        firebaseService.saveLimitMax(Sensor.HUMIDITY, data);
+    }
+
+    @PostMapping("/gv/temp/min")
+    public void postTemperatureMin(@RequestBody FirebaseGranicneVrijednosti data) {
+        firebaseService.saveLimitMin(Sensor.TEMPERATURE, data);
+    }
+
+    @PostMapping("/gv/humidity/min")
+    public void postHumidityMin(@RequestBody FirebaseGranicneVrijednosti data) {
+        firebaseService.saveLimitMin(Sensor.HUMIDITY, data);
     }
 
     @PostMapping("/ls/temp")
@@ -71,14 +81,24 @@ public class FirebaseController {
         return new ResponseEntity<>(SenseDTO.toDto(Sensor.HUMIDITY, firebaseService.getSense(Sensor.HUMIDITY)), HttpStatus.OK);
     }
 
-    @GetMapping("/gv/temp")
-    public ResponseEntity<LimitDTO> getLimitTemperature() {
-        return new ResponseEntity<>(LimitDTO.toDto(Sensor.TEMPERATURE, firebaseService.getLimit(Sensor.TEMPERATURE)), HttpStatus.OK);
+    @GetMapping("/gv/temp/max")
+    public ResponseEntity<LimitDTO> getLimitTemperatureMax() {
+        return new ResponseEntity<>(LimitDTO.toDto(Sensor.TEMPERATURE, firebaseService.getLimitMax(Sensor.TEMPERATURE)), HttpStatus.OK);
     }
 
-    @GetMapping("/gv/humidity")
-    public ResponseEntity<LimitDTO> getLimitHumidity() {
-        return new ResponseEntity<>(LimitDTO.toDto(Sensor.HUMIDITY, firebaseService.getLimit(Sensor.HUMIDITY)), HttpStatus.OK);
+    @GetMapping("/gv/humidity/max")
+    public ResponseEntity<LimitDTO> getLimitHumidityMax() {
+        return new ResponseEntity<>(LimitDTO.toDto(Sensor.HUMIDITY, firebaseService.getLimitMax(Sensor.HUMIDITY)), HttpStatus.OK);
+    }
+
+    @GetMapping("/gv/temp/min")
+    public ResponseEntity<LimitDTO> getLimitTemperatureMin() {
+        return new ResponseEntity<>(LimitDTO.toDto(Sensor.TEMPERATURE, firebaseService.getLimitMin(Sensor.TEMPERATURE)), HttpStatus.OK);
+    }
+
+    @GetMapping("/gv/humidity/min")
+    public ResponseEntity<LimitDTO> getLimitHumidityMin() {
+        return new ResponseEntity<>(LimitDTO.toDto(Sensor.HUMIDITY, firebaseService.getLimitMin(Sensor.HUMIDITY)), HttpStatus.OK);
     }
 
     @GetMapping("/error/temp")
