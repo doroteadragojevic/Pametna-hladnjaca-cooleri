@@ -19,7 +19,7 @@ public class JsonRepresentation {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Source {
-        private String gatewayGroup = "Grupa16GWGroup";
+        private String gatewayGroup = "Grupa16GWGroup2";
         private String resource = "Grupa16Led";
     }
 
