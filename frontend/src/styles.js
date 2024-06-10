@@ -61,10 +61,12 @@ export const NotificationItem = styled.div`
 
 export const Navigation = styled.nav`
   display: flex;
-  justify-content: flex-start;
-  background-color: #007bff;
-  padding: 10px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  align-items: center;
+  background-color: #282c34;
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0px 4px 2px -2px gray;
 `;
 
 export const NavLink = styled(Link)`
@@ -113,4 +115,34 @@ export const Button = styled.button`
   font-size: 16px;
   margin-top: 10px;
   width: fit-content;
+`;
+
+export const SettingsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const SettingSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const Input = styled.input`
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+`;
+
+export const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
 `;
