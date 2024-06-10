@@ -1,4 +1,3 @@
-// src/components/Settings.js
 import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import {
@@ -14,10 +13,10 @@ import { Divider } from "../styles";
 function Settings() {
   const { fetchTemperatureData, fetchMoistureData } = useContext(AppContext);
 
-  const [minTemp, setMinTemp] = useState(0);
-  const [maxTemp, setMaxTemp] = useState(100);
-  const [minMoisture, setMinMoistureValue] = useState(0);
-  const [maxMoisture, setMaxMoistureValue] = useState(100);
+  const [minTemp, setMinTemp] = useState(0.0);
+  const [maxTemp, setMaxTemp] = useState(100.0);
+  const [minMoisture, setMinMoistureValue] = useState(0.0);
+  const [maxMoisture, setMaxMoistureValue] = useState(100.0);
 
   useEffect(() => {
     async function fetchThresholds() {

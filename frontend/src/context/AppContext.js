@@ -123,6 +123,8 @@ const AppProvider = ({ children }) => {
         movementData,
         notifications,
         activityLog,
+        fetchTemperatureData,
+        fetchMoistureData,
       }}
     >
       {children}
