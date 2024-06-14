@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MqttPublisherService {
 
-    private static final String ACTUATE = "intstv_cooleri/input/led";
+    private static final String ACTUATE = "intstv_cooleri/input/actuate";
 
     @Autowired
     private IMqttClient mqttClient;
