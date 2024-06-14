@@ -2,6 +2,7 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart,
+  Filler,
   LineElement,
   CategoryScale,
   LinearScale,
@@ -21,9 +22,9 @@ Chart.register(
   Legend
 );
 
-const MoistureChart = ({ moistureData }) => {
+const HumidityChart = ({ humidityData }) => {
   // Prikaz zadnjih deset vrijednosti
-  const dataToShow = moistureData.slice(-10);
+  const dataToShow = humidityData.slice(-10);
 
   const chartData = {
     labels: dataToShow.map((entry) =>
@@ -31,7 +32,7 @@ const MoistureChart = ({ moistureData }) => {
     ),
     datasets: [
       {
-        label: "Moisture",
+        label: "Humidity",
         data: dataToShow.map((entry) => entry.value),
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -69,7 +70,7 @@ const MoistureChart = ({ moistureData }) => {
       y: {
         title: {
           display: true,
-          text: "Moisture Level (%)",
+          text: "Humidity Level (%)",
         },
         beginAtZero: true,
       },
@@ -83,4 +84,4 @@ const MoistureChart = ({ moistureData }) => {
   );
 };
 
-export default MoistureChart;
+export default HumidityChart;
