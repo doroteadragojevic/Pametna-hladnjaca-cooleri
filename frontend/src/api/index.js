@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/iot"; // Provjerite ispravnost URL-a
+const BASE_URL = "http://localhost:8080/iot";
 
 export const getTemperature = async () => {
   const response = await axios.get(`${BASE_URL}/ls/temp`);
   return response.data;
 };
 
-export const getMoisture = async () => {
+export const getHumidity = async () => {
   const response = await axios.get(`${BASE_URL}/ls/humidity`);
   return response.data;
 };
@@ -26,7 +26,7 @@ export const getTemperatureThreshold = async () => {
   };
 };
 
-export const getMoistureThreshold = async () => {
+export const getHumidityThreshold = async () => {
   const minResponse = await axios.get(`${BASE_URL}/gv/humidity/min`);
   const maxResponse = await axios.get(`${BASE_URL}/gv/humidity/max`);
   return {
@@ -43,10 +43,10 @@ export const setMaxTemperature = async (value) => {
   await axios.post(`${BASE_URL}/gv/temp/max`, { value: value });
 };
 
-export const setMinMoisture = async (value) => {
+export const setMinHumidity = async (value) => {
   await axios.post(`${BASE_URL}/gv/humidity/min`, { value: value });
 };
 
-export const setMaxMoisture = async (value) => {
+export const setMaxHumidity = async (value) => {
   await axios.post(`${BASE_URL}/gv/humidity/max`, { value: value });
 };

@@ -1,17 +1,17 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import {
   getTemperature,
-  getMoisture,
+  getHumidity,
   getMovement,
   getTemperatureThreshold,
-  getMoistureThreshold,
+  getHumidityThreshold,
 } from "../api";
 
 export const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [temperatureData, setTemperatureData] = useState([]);
-  const [moistureData, setMoistureData] = useState([]);
+  const [humidityData, setHumidityData] = useState([]);
   const [movementData, setMovementData] = useState([]);
   const [notifications, setNotifications] = useState({});
   const [activityLog, setActivityLog] = useState([]);
@@ -36,16 +36,16 @@ const AppProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchMoistureData = useCallback(async () => {
+  const fetchHumidityData = useCallback(async () => {
     try {
-      const data = await getMoisture();
-      setMoistureData((prevData) => [
+      const data = await getHumidity();
+      setHumidityData((prevData) => [
         ...prevData.slice(-9),
         { timestamp: data.timestamp.seconds * 1000, value: data.value },
       ]);
-      addLogEntry(`Received moisture information: ${data.value}%.`);
+      addLogEntry(`Received humidity information: ${data.value}%.`);
     } catch (error) {
-      console.error("Error fetching moisture data:", error);
+      console.error("Error fetching humidity data:", error);
     }
   }, []);
 
@@ -72,12 +72,12 @@ const AppProvider = ({ children }) => {
           ? "is outside of the correct range"
           : "is inside the correct range";
 
-      const moistureThreshold = await getMoistureThreshold();
-      const moistureData = await getMoisture();
-      const currentMoisture = moistureData.value;
-      const moistureStatus =
-        currentMoisture < moistureThreshold.min ||
-        currentMoisture > moistureThreshold.max
+      const humidityThreshold = await getHumidityThreshold();
+      const humidityData = await getHumidity();
+      const currentHumidity = humidityData.value;
+      const humidityStatus =
+        currentHumidity < humidityThreshold.min ||
+        currentHumidity > humidityThreshold.max
           ? "is outside of the correct range"
           : "is inside the correct range";
 
@@ -88,7 +88,7 @@ const AppProvider = ({ children }) => {
 
       setNotifications({
         temperature: { value: currentTemp, status: tempStatus },
-        moisture: { value: currentMoisture, status: moistureStatus },
+        humidity: { value: currentHumidity, status: humidityStatus },
         movement: { status: movementStatus },
       });
     } catch (error) {
@@ -97,20 +97,20 @@ const AppProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const temperatureInterval = setInterval(fetchTemperatureData, 10000);
-    const moistureInterval = setInterval(fetchMoistureData, 10000);
-    const movementInterval = setInterval(fetchMovementData, 10000);
-    const notificationsInterval = setInterval(fetchNotifications, 10000);
+    const temperatureInterval = setInterval(fetchTemperatureData, 30000);
+    const humidityInterval = setInterval(fetchHumidityData, 30000);
+    const movementInterval = setInterval(fetchMovementData, 5000);
+    const notificationsInterval = setInterval(fetchNotifications, 20000);
 
     return () => {
       clearInterval(temperatureInterval);
-      clearInterval(moistureInterval);
+      clearInterval(humidityInterval);
       clearInterval(movementInterval);
       clearInterval(notificationsInterval);
     };
   }, [
     fetchTemperatureData,
-    fetchMoistureData,
+    fetchHumidityData,
     fetchMovementData,
     fetchNotifications,
   ]);
@@ -119,12 +119,12 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         temperatureData,
-        moistureData,
+        humidityData,
         movementData,
         notifications,
         activityLog,
         fetchTemperatureData,
-        fetchMoistureData,
+        fetchHumidityData,
       }}
     >
       {children}

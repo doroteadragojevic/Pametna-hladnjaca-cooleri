@@ -3,20 +3,20 @@ import { AppContext } from "../context/AppContext";
 import {
   setMinTemperature,
   setMaxTemperature,
-  setMinMoisture,
-  setMaxMoisture,
+  setMinHumidity,
+  setMaxHumidity,
   getTemperatureThreshold,
-  getMoistureThreshold,
+  getHumidityThreshold,
 } from "../api";
 import { Divider } from "../styles";
 
 function Settings() {
-  const { fetchTemperatureData, fetchMoistureData } = useContext(AppContext);
+  const { fetchTemperatureData, fetchHumidityData } = useContext(AppContext);
 
   const [minTemp, setMinTemp] = useState(0.0);
   const [maxTemp, setMaxTemp] = useState(100.0);
-  const [minMoisture, setMinMoistureValue] = useState(0.0);
-  const [maxMoisture, setMaxMoistureValue] = useState(100.0);
+  const [minHumidity, setMinHumidityValue] = useState(0.0);
+  const [maxHumidity, setMaxHumidityValue] = useState(100.0);
 
   useEffect(() => {
     async function fetchThresholds() {
@@ -25,9 +25,9 @@ function Settings() {
         setMinTemp(tempThreshold.min);
         setMaxTemp(tempThreshold.max);
 
-        const moistureThreshold = await getMoistureThreshold();
-        setMinMoistureValue(moistureThreshold.min);
-        setMaxMoistureValue(moistureThreshold.max);
+        const HumidityThreshold = await getHumidityThreshold();
+        setMinHumidityValue(HumidityThreshold.min);
+        setMaxHumidityValue(HumidityThreshold.max);
       } catch (error) {
         console.error("Error fetching thresholds:", error);
       }
@@ -37,8 +37,8 @@ function Settings() {
 
   const handleMinTempChange = (e) => setMinTemp(e.target.value);
   const handleMaxTempChange = (e) => setMaxTemp(e.target.value);
-  const handleMinMoistureChange = (e) => setMinMoistureValue(e.target.value);
-  const handleMaxMoistureChange = (e) => setMaxMoistureValue(e.target.value);
+  const handleMinHumidityChange = (e) => setMinHumidityValue(e.target.value);
+  const handleMaxHumidityChange = (e) => setMaxHumidityValue(e.target.value);
 
   const handleSaveTemperature = async () => {
     try {
@@ -51,14 +51,14 @@ function Settings() {
     }
   };
 
-  const handleSaveMoisture = async () => {
+  const handleSaveHumidity = async () => {
     try {
-      await setMinMoisture(minMoisture);
-      await setMaxMoisture(maxMoisture);
-      alert("Moisture thresholds updated successfully!");
-      fetchMoistureData();
+      await setMinHumidity(minHumidity);
+      await setMaxHumidity(maxHumidity);
+      alert("Humidity thresholds updated successfully!");
+      fetchHumidityData();
     } catch (error) {
-      console.error("Error updating moisture thresholds:", error);
+      console.error("Error updating humidity thresholds:", error);
     }
   };
 
@@ -118,14 +118,14 @@ function Settings() {
       </div>
       <Divider style={{ margin: "20px 0" }} />
       <div style={{ marginBottom: "20px" }}>
-        <h3>Moisture Thresholds</h3>
+        <h3>Humidity Thresholds</h3>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Min Moisture:
+            Min Humidity:
             <input
               type="number"
-              value={minMoisture}
-              onChange={handleMinMoistureChange}
+              value={minHumidity}
+              onChange={handleMinHumidityChange}
               style={{
                 display: "block",
                 margin: "5px 0",
@@ -138,11 +138,11 @@ function Settings() {
         </div>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Max Moisture:
+            Max Humidity:
             <input
               type="number"
-              value={maxMoisture}
-              onChange={handleMaxMoistureChange}
+              value={maxHumidity}
+              onChange={handleMaxHumidityChange}
               style={{
                 display: "block",
                 margin: "5px 0",
@@ -154,7 +154,7 @@ function Settings() {
           </label>
         </div>
         <button
-          onClick={handleSaveMoisture}
+          onClick={handleSaveHumidity}
           style={{
             display: "block",
             padding: "10px 20px",
@@ -166,7 +166,7 @@ function Settings() {
             margin: "10px 0",
           }}
         >
-          Save Moisture
+          Save Humidity
         </button>
       </div>
     </div>

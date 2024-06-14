@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import TemperatureChart from "../components/TemperatureChart";
-import MoistureChart from "../components/MoistureChart";
+import HumidityChart from "../components/HumidityChart";
 import { AppContext } from "../context/AppContext";
 import {
   Container,
@@ -14,7 +14,7 @@ import {
 import Settings from "../components/Settings";
 
 const Dashboard = () => {
-  const { temperatureData, moistureData, notifications, activityLog } =
+  const { temperatureData, humidityData, notifications, activityLog } =
     useContext(AppContext);
 
   const renderNotification = (type, value, status, action) => {
@@ -51,12 +51,12 @@ const Dashboard = () => {
                 notifications.temperature.status,
                 notifications.temperature.action
               )}
-            {notifications.moisture &&
+            {notifications.humidity &&
               renderNotification(
-                "moisture",
-                notifications.moisture.value + "%",
-                notifications.moisture.status,
-                notifications.moisture.action
+                "humidity",
+                notifications.humidity.value + "%",
+                notifications.humidity.status,
+                notifications.humidity.action
               )}
             {notifications.movement &&
               renderNotification(
@@ -72,7 +72,7 @@ const Dashboard = () => {
           <Divider />
           <TemperatureChart temperatureData={temperatureData} />
           <Divider />
-          <MoistureChart moistureData={moistureData} />
+          <HumidityChart humidityData={humidityData} />
         </Section>
         <Section>
           <SectionTitle>Settings</SectionTitle>

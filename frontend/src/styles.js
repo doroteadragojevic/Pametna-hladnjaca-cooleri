@@ -55,8 +55,18 @@ export const NotificationItem = styled.div`
   padding: 10px;
   border-radius: 5px;
   color: white;
-  background-color: ${(props) =>
-    props.color === "green" ? "#4caf50" : "#f44336"};
+  background-color: ${(props) => {
+    switch (props.color) {
+      case "green":
+        return "#4caf50"; // Green color for inside the correct range
+      case "red":
+        return "#f44336"; // Red color for outside the correct range
+      case "grey":
+        return "#9e9e9e"; // Grey color for no movement
+      default:
+        return "#f44336"; // Default to red if no valid color is provided
+    }
+  }};
 `;
 
 export const Navigation = styled.nav`
