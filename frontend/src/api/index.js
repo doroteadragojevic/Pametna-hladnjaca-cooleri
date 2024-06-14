@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/iot"; // Provjerite ispravnost URL-a
+const BASE_URL = "http://localhost:8080/iot";
 
 export const getTemperature = async () => {
   const response = await axios.get(`${BASE_URL}/ls/temp`);

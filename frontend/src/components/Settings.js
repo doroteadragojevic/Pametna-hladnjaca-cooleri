@@ -55,10 +55,10 @@ function Settings() {
     try {
       await setMinMoisture(minMoisture);
       await setMaxMoisture(maxMoisture);
-      alert("Moisture thresholds updated successfully!");
+      alert("Humidity thresholds updated successfully!");
       fetchMoistureData();
     } catch (error) {
-      console.error("Error updating moisture thresholds:", error);
+      console.error("Error updating humidity thresholds:", error);
     }
   };
 
@@ -118,10 +118,10 @@ function Settings() {
       </div>
       <Divider style={{ margin: "20px 0" }} />
       <div style={{ marginBottom: "20px" }}>
-        <h3>Moisture Thresholds</h3>
+        <h3>Humidity Thresholds</h3>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Min Moisture:
+            Min Humidity:
             <input
               type="number"
               value={minMoisture}
@@ -138,7 +138,7 @@ function Settings() {
         </div>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Max Moisture:
+            Max Humidity:
             <input
               type="number"
               value={maxMoisture}
@@ -166,7 +166,7 @@ function Settings() {
             margin: "10px 0",
           }}
         >
-          Save Moisture
+          Save Humidity
         </button>
       </div>
     </div>
